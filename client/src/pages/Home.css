@@ -1,0 +1,72 @@
+.home-page {
+    background-color: #14181c;
+    min-height: 100vh;
+}
+
+.home-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.home-hero {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.home-hero h1 {
+    color: hsl(210, 20%, 67%);
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+
+.home-hero p{
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+
+.home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 25px;
+}
+
+.home-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.home-card img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    border-radius: 4px;
+    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    display: block;
+}
+
+.home-card:hover img {
+    border-color: hsl(143, 100%, 44%);
+}
+
+.home-card:hover {
+    transform: translateY(-5px);
+}
+
+.home-card h3 {
+    color: hsl(210, 20%, 67%);
+    font-size: 0.85rem;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.home-card:hover h3 {
+    color: hsl(0, 0%, 100%);
+}

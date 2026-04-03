@@ -1,0 +1,154 @@
+.fv-page-bg {
+    background-color: #14181c;
+    min-height: 100vh;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.fv-logo {
+    font-weight: 900;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.fv-nav-links a {
+    color: #9ab;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.fv-nav-links a.active {
+    color: #fff;
+}
+
+/* Main Layout */
+.fv-main-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.fv-top-navigation {
+    margin-bottom: 15px;
+}
+
+.fv-back-btn {
+    background: none;
+    border: none;
+    color: #678;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+}
+
+.fv-back-btn:hover {
+    color: #fff;
+}
+
+/* Header */
+.fv-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid #2c3440;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+}
+
+.fv-page-title {
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.fv-film-count {
+    color: #678;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+/* Movie Grid */
+.fv-poster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 25px;
+}
+
+.fv-poster-box {
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.fv-poster-box:hover {
+    border-color: #00e054;
+    /* Green border on hover */
+}
+
+.fv-poster-img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    display: block;
+    object-fit: cover;
+}
+
+/* Remove Button */
+.fv-remove-overlay {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s, background 0.2s;
+}
+
+.fv-poster-box:hover .fv-remove-overlay {
+    opacity: 1;
+}
+
+.fv-remove-overlay:hover {
+    background: #ff4b4b;
+}
+
+/* Title Label */
+.fv-movie-name {
+    color: #9ab;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Empty State */
+.fv-empty-state {
+    text-align: center;
+    padding: 100px 0;
+    color: #678;
+}
+
+.fv-browse-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: #00e054;
+    text-decoration: none;
+    border: 1px solid #00e054;
+    padding: 8px 16px;
+    border-radius: 4px;
+}

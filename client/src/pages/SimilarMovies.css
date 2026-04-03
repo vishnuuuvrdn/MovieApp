@@ -1,0 +1,82 @@
+/* SimilarMovies.css */
+
+.similar-section {
+    max-width: 1050px;
+    margin: 60px auto 0;
+    padding: 40px 0;
+    border-top: 1px solid #2c3440;
+    /* Subtle divider line */
+}
+
+.section-title {
+    font-family: 'Montserrat', sans-serif;
+    color: #678;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+}
+
+/* The Grid */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 20px;
+}
+
+/* Individual Card */
+.movie-card {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+}
+
+.poster-wrapper {
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1c232b;
+    aspect-ratio: 2/3;
+}
+
+.poster-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Hover effect on poster border */
+.movie-card:hover .poster-wrapper {
+    border-color: #00e054;
+    /* Letterboxd Green */
+}
+
+/* Small Title below poster */
+.movie-title-sm {
+    font-size: 0.8rem;
+    color: #9ab;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: 400;
+    /* Truncate text with ellipsis if title is too long */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.movie-card:hover .movie-title-sm {
+    color: #fff;
+}
+
+/* Responsive: 3 columns on mobile */
+@media (max-width: 600px) {
+    .movie-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+}

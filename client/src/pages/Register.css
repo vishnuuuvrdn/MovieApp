@@ -1,0 +1,102 @@
+/* Container matches Login exactly */
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: hsl(210, 17%, 9%);
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    padding: 20px;
+}
+
+/* Card styling */
+.register-card {
+    background-color: #1b2228;
+    padding: 30px 40px;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.register-card h1 {
+    color: hsl(0, 0%, 100%);
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin: 0 0 20px 0;
+    text-align: left;
+    border-bottom: 1px solid #445566;
+    padding-bottom: 10px;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Label styling */
+.register-form label {
+    color: #99aabb;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+/* Input styling with focus transition */
+.register-input {
+    background-color: hsl(216, 19%, 21%);
+    border: 1px solid hsl(216, 19%, 21%);
+    border-radius: 3px;
+    padding: 10px;
+    color: hsl(0, 0%, 100%);
+    font-size: 16px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.register-input:focus {
+    outline: none;
+    background-color: hsl(0, 0%, 100%);
+    color: hsl(210, 17%, 9%);
+}
+
+/* The Signature Green Gradient Button */
+.register-button {
+    background: linear-gradient(to right, hsl(135, 100%, 19%) 0%, hsl(143, 91%, 46%) 100%);
+    color: hsl(0, 0%, 0%);
+    border: none;
+    padding: 12px;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    transition: filter 0.2s, transform 0.1s;
+}
+
+.register-button:hover {
+    filter: brightness(1.2);
+}
+
+.register-button:active {
+    transform: translateY(1px);
+}
+
+.footer-text {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #99aabb;
+    text-align: center;
+}
+
+.footer-text span {
+    color: #ffffff;
+    /* Brighter for better visibility */
+    text-decoration: underline;
+    cursor: pointer;
+}

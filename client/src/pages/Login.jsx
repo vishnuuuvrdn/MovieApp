@@ -29,14 +29,18 @@ function Login() {
         <form className="login-form" onSubmit={handleSubmit}>
           <input
             className="login-input"
-            placeholder="Email"
             type="email"
+            name="email"
+            id="email"
+            placeholder="Email"
             required
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
           <input
             className="login-input"
             type="password"
+            name="password"
+            id="password"
             placeholder="Password"
             required
             onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -47,8 +51,7 @@ function Login() {
         </form>
 
         <p className="footer-text">
-          New here?{" "}
-          <span onClick={() => navigate("/register")}>Join Here</span>
+          New here? <span onClick={() => navigate("/register")}>Join Here</span>
         </p>
       </div>
     </div>

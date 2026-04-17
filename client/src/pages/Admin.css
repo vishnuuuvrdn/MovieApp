@@ -1,0 +1,132 @@
+:root {
+    --lb-bg: #14181c;
+    --lb-surface: #1b2228;
+    --lb-hover: #242c34;
+    --lb-border: #456;
+    --lb-text-main: #9ab;
+    --lb-text-bright: #fff;
+    --lb-green: #00e054;
+    --lb-blue: #40bcf4;
+    --lb-orange: #ff8000;
+}
+
+.admin-container {
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 50px 20px;
+    background-color: var(--lb-bg);
+    min-height: 100vh;
+    font-family: 'Graphik', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.admin-header {
+    border-bottom: 1px solid var(--lb-border);
+    margin-bottom: 30px;
+    padding-bottom: 8px;
+}
+
+.admin-header h1 {
+    color: var(--lb-text-bright);
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: bold;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background-color: var(--lb-border);
+    border: 1px solid var(--lb-border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background-color: #2c3440;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 4px solid var(--lb-blue);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--lb-text-bright);
+}
+
+.stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--lb-text-main);
+}
+
+.user-list-header {
+    color: var(--lb-text-main);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid var(--lb-border);
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+.user-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--lb-surface);
+    border-bottom: 1px solid #242c34;
+    padding: 16px;
+    transition: 0.2s ease-in-out;
+}
+
+.user-card:hover {
+    background-color: var(--lb-hover);
+}
+
+.user-info strong {
+    color: var(--lb-text-bright);
+    font-size: 17px;
+}
+
+.user-info p {
+    margin: 4px 0 0 0;
+    font-size: 14px;
+    color: var(--lb-text-main);
+}
+
+.role-badge {
+    background: #456;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+
+.btn-delete {
+    background-color: #456;
+    color: #cde;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+.btn-delete:hover {
+    background-color: #ee4444;
+    color: white;
+}

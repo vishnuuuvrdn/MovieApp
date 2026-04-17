@@ -58,8 +58,14 @@ const addFavorite = async (req, res) => {
 
 const getFavorites = async (req, res) => {
   try {
-    const favs = await Favorite.find({ userId : req.user.id });
-    res.json(favs);
+    const userId = req.user.id;
+    const favs = await Favorite.find({ userId });
+
+    if (!favs || favs.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    res.status(200).json(favs);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch favorites" });
   }
@@ -85,8 +91,8 @@ const similarMovies = async(req, res) => {
     const id = req.params.id;
     const data = await getSimilarMovies(id);
     res.json(data);
-  }catch(error){
-    res.status(500).json({error: "Failed to fetch Similar Movies!"})
+  }catch(err){
+    res.status(500).json({error: err.message})
   }
 };
 

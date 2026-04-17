@@ -7,12 +7,12 @@ import Navbar from '../components/Navbar'
 function Favorites() {
   const [favorites, setFavorites] = useState([]);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
 
   const fetchFavorites = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/movies/favorites",
+        `http://localhost:5000/api/movies/favorites`,
         { headers: { Authorization: token } },
       );
       setFavorites(res.data);

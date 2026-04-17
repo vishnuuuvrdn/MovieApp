@@ -10,20 +10,19 @@ function Navbar({ onSearch }) {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
 
     const delay = setTimeout(() => {
-      if(window.location.pathname !== "/"){
+      if (window.location.pathname !== "/") {
         navigate(`/?search=${query}`);
-      }else if(onSearch){
+      } else if (onSearch) {
         onSearch(query);
       }
     }, 400);
-    
+
     return () => clearTimeout(delay);
   }, [query]);
 
@@ -39,6 +38,8 @@ function Navbar({ onSearch }) {
         <div className="nav-middle">
           <input
             type="text"
+            name="text"
+            id="text"
             placeholder="Search films..."
             className="nav-search-input"
             value={query}
@@ -68,7 +69,7 @@ function Navbar({ onSearch }) {
             </button>
             <button
               className="nav-item-btn"
-              onClick={() => navigate("/favorites")}
+              onClick={() => navigate(`/favorites`)}
             >
               Favorites
             </button>

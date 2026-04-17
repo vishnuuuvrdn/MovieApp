@@ -1,6 +1,9 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Favorite = require("../models/Favorite");
+const Watched = require("../models/Watched");
+const Watchlist = require("../models/Watchlist");
 
 // Register
 const register = async (req, res) => {
@@ -66,4 +69,64 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const updateProfile = async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { name },
+      { new: true },
+    ).select("-password");
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Update failed" });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: "User deleted" });
+  } catch {
+    res.status(500).json({ message: "Delete failed" });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password"); // hide password
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
+};
+
+const getStats = async (req, res) => {
+  try {
+    const users = await User.countDocuments();
+    const favorites = await Favorite.countDocuments();
+    const watched = await Watched.countDocuments();
+    const watchlist = await Watchlist.countDocuments();
+
+    res.json({
+      users,
+      favorites,
+      watched,
+      watchlist
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Stats failed" });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  updateProfile,
+  deleteUser,
+  getStats,
+  getAllUsers,
+};

@@ -28,6 +28,8 @@ function Register() {
           <input
             className="register-input"
             type="text"
+            name="text"
+            id="text"
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
 
@@ -35,6 +37,8 @@ function Register() {
           <input
             className="register-input"
             type="email"
+            name="email"
+            id="email"
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
 
@@ -42,6 +46,8 @@ function Register() {
           <input
             className="register-input"
             type="password"
+            name="password"
+            id="password"
             onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
 

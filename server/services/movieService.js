@@ -10,30 +10,52 @@ const getPopularMovies = async () => {
     );
     return response.data;
   } catch(error) {
-    console.error("TMDB Error:", error.message);
+    console.error("TMDB Error:", error);
     throw new Error(error.message);
   }
 };
 
 const searchMovies = async (query) => {
-  const response = await axios.get(
-    `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
-  );
-  return response.data;
+  try{
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
+    );
+    return response.data;
+  }
+  catch(error){
+    console.log(error);
+  }
 };
 
 const getMovieDetails = async (id) => {
-  const response = await axios.get(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`
-  );
-  return response.data;
+  try{
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`
+    );
+    return response.data;
+  }
+  catch(error){
+    console.log(error);
+  }
 };
 
 const getSimilarMovies = async (id) => {
-  const response = await axios.get(
-    `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${API_KEY}`
-  );
-  return response.data;
+  try{
+    const [res1, res2] = await Promise.all([
+      axios.get(
+        `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${API_KEY}`,
+      ),
+      axios.get(
+        `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${API_KEY}`,
+      ),
+    ]);
+
+    return (res1.data, res2.data);
+  }
+  catch(error){
+    console.error({message : error.message});
+    console.log(error);
+  }
 };
 
 module.exports = { getPopularMovies, searchMovies, getMovieDetails, getSimilarMovies };

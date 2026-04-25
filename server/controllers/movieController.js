@@ -52,6 +52,7 @@ const addFavorite = async (req, res) => {
     console.log(`${title} added to favorites`);
     res.json({ message: "Added to favorites" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to add favorite" });
   }
 };
@@ -67,6 +68,7 @@ const getFavorites = async (req, res) => {
 
     res.status(200).json(favs);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to fetch favorites" });
   }
 };
@@ -82,6 +84,7 @@ const removeFavorite = async (req, res) => {
 
     res.json({ message: "Removed from favorites" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to remove favorite" });
   }
 };
@@ -92,6 +95,7 @@ const similarMovies = async(req, res) => {
     const data = await getSimilarMovies(id);
     res.json(data);
   }catch(err){
+    console.log(error);
     res.status(500).json({error: err.message})
   }
 };
@@ -112,6 +116,7 @@ const addToWatchlist = async (req, res) => {
     
     res.json({ message : "Added to Watchlist" });
   }catch(error){
+    console.log(error);
     res.status(500).json({ error : "Failed to add Watchlist" });
   }
 };
@@ -121,6 +126,7 @@ const getWatchlist = async (req, res) => {
     const watchlist = await Watchlist.find({ userId: req.user.id });
     res.json(watchlist);
   } catch(error) {
+    console.log(error);
     res.status(500).json({ error : "Failed fetch Watchlist" });
   }
 };
@@ -136,6 +142,7 @@ const removeWatchlist = async (req, res) => {
 
     res.json({ message : "Removed from Watchlist" });
   } catch(error) {
+    console.log(error);
     res.status(500).json({ message : "Failed to remove from Watchlist" });
   }
 };
@@ -183,6 +190,7 @@ const markAsWatched = async (req, res) => {
 
     res.json({ message: "Added to Watched" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to update watched" });
   }
 };
@@ -204,6 +212,7 @@ const checkAlreadyWatched = async (req, res) => {
 
     return res.status(200).json({ watched: false, message: "Not Watched Yet" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to fetch watched status" });
   }
 };

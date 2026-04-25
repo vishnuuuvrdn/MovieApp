@@ -65,6 +65,7 @@ const login = async (req, res) => {
       },
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Login failed" });
   }
 };
@@ -81,6 +82,7 @@ const updateProfile = async (req, res) => {
 
     res.json(user);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Update failed" });
   }
 };
@@ -89,7 +91,8 @@ const deleteUser = async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     res.json({ message: "User deleted" });
-  } catch {
+  } catch(err) {
+    console.log(err);
     res.status(500).json({ message: "Delete failed" });
   }
 };
@@ -99,6 +102,7 @@ const getAllUsers = async (req, res) => {
     const users = await User.find().select("-password"); // hide password
     res.json(users);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Failed to fetch users" });
   }
 };

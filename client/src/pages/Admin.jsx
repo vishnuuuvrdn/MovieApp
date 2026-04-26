@@ -9,7 +9,7 @@ function Admin() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/auth/users", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/users`, {
         headers: { Authorization: token },
       });
       setUsers(res.data);
@@ -20,7 +20,7 @@ function Admin() {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/auth/stats", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/stats`, {
         headers: { Authorization: token },
       });
       setStats(res.data);
@@ -32,7 +32,7 @@ function Admin() {
   const deleteUser = async (id) => {
     if (!window.confirm("Are you sure you want to remove this user?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/auth/users/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/auth/users/${id}`, {
         headers: { Authorization: token },
       });
       setUsers(users.filter((user) => user._id !== id));

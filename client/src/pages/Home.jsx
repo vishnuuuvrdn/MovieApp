@@ -13,8 +13,8 @@ function Home() {
     try {
       setLoading(true);
       const url = searchQuery
-        ? `https://cinescope-j0z6.onrender.com/api/movies/search?q=${searchQuery}`
-        : "https://cinescope-j0z6.onrender.com/api/movies";
+        ? `${import.meta.env.VITE_API_URL}/api/movies/search?q=${searchQuery}`
+        : `${import.meta.env.VITE_API_URL}/api/movies`;
       const res = await axios.get(url);
       setMovies(res.data.results);
     } catch (err) {

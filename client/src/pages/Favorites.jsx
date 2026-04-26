@@ -12,7 +12,7 @@ function Favorites() {
   const fetchFavorites = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/movies/favorites`,
+        `${import.meta.env.VITE_API_URL}/api/movies/favorites`,
         { headers: { Authorization: token } },
       );
       setFavorites(res.data);
@@ -24,7 +24,7 @@ function Favorites() {
   const handleRemove = async (e, id) => {
     e.stopPropagation();
     try {
-      await axios.delete(`http://localhost:5000/api/movies/favorite/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/movies/favorite/${id}`, {
         headers: { Authorization: token },
       });
       fetchFavorites();
@@ -44,7 +44,6 @@ function Favorites() {
       </nav>
 
       <div className="fv-main-container">
-        {/* Back Button and Header */}
         <div className="fv-top-navigation">
           <button className="fv-back-btn" onClick={() => navigate(-1)}>
             ← Back

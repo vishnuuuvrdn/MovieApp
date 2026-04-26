@@ -23,7 +23,7 @@ function Profile() {
   const handleUpdate = async () => {
     try {
       const res = await axios.put(
-        "http://localhost:5000/api/auth/profile",
+        `${import.meta.env.VITE_API_URL}/api/auth/profile`,
         { name },
         { headers: { Authorization: token } },
       );

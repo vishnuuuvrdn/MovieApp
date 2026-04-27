@@ -5,7 +5,6 @@
     margin: 60px auto 0;
     padding: 40px 0;
     border-top: 1px solid #2c3440;
-    /* Subtle divider line */
 }
 
 .section-title {
@@ -21,7 +20,7 @@
 .movie-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 20px;
+    gap: 50px;
 }
 
 /* Individual Card */

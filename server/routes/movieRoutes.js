@@ -14,6 +14,7 @@ const {
   removeWatchlist,
   markAsWatched,
   checkAlreadyWatched,
+  removeWatched
 } = require("../controllers/movieController");
 
 
@@ -31,6 +32,7 @@ router.delete("/watchlist/:id", authMiddleware, removeWatchlist);
 
 router.post("/watched/:id", authMiddleware, markAsWatched);
 router.get("/watched/:id", authMiddleware, checkAlreadyWatched);
+router.delete("/watched/:id", authMiddleware, removeWatched)
 
 router.get("/:id", fetchMovieDetails);
 

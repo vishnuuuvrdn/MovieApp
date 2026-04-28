@@ -195,6 +195,17 @@ const markAsWatched = async (req, res) => {
   }
 };
 
+const removeWatched = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Watched.findOneAndDelete({ userId: req.user.id, movieId: id });
+    res.json({ message: "Removed from Watched" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to remove from Watched" });
+  }
+};
+
 const checkAlreadyWatched = async (req, res) => {
   try {
     const { id } = req.params;
@@ -230,4 +241,5 @@ module.exports = {
   removeWatchlist,
   markAsWatched,
   checkAlreadyWatched,
+  removeWatched
 };

@@ -109,10 +109,14 @@ function MovieDetails() {
 
   const toggleWatched = async () => {
     try {
-      await api.post(`/api/movies/watched/${movie.id}`, {
-        title: movie.title,
-        poster: movie.poster_path,
-      });
+      if(!isWatched){
+        await api.post(`/api/movies/watched/${movie.id}`, {
+          title: movie.title,
+          poster: movie.poster_path,
+        });
+      }else{
+        await api.delete(`/api/movies/watched/${movie.id}`);
+      }
       setIsWatched((p) => !p);
       showToast(!isWatched ? "Marked as Watched" : "Removed from Watched");
     } catch {

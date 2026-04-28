@@ -86,7 +86,7 @@ function Watchlist() {
                     e.stopPropagation();
                     remove(movie.movieId);
                   }}
-                  className="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-black/70 text-white text-xl flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-[#ff4b4b] transition-all"
+                  className="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-black/70 text-white text-xl flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-[#ff4b4b] transition-all cursor-pointer"
                 >
                   ×
                 </button>

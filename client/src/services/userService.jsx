@@ -7,7 +7,7 @@ export const removeFavorite = (movieId) =>
   api.delete(`/api/movies/favorite/${movieId}`);
 
 export const getWatchlist = () => api.get("/api/movies/watchlist");
-export const addToWatchlist = (movieId, title, poster) =>
+export const addToWatchlist = ({ movieId, title, poster }) =>
   api.post("/api/movies/watchlist", { movieId, title, poster });
 export const removeFromWatchlist = (movieId) =>
   api.delete(`/api/movies/watchlist/${movieId}`);

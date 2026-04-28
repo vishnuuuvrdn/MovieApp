@@ -1,100 +1,153 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-import "./Navbar.css";
+import useIsMobile from "../hooks/useIsMobile";
+import { useAuth } from "../context/AuthContext";
+
+const NAV_LINKS = [
+  { label: "Watchlist", path: "/watchlist", auth: true },
+  { label: "Favorites", path: "/favorites", auth: true },
+  { label: "Profile", path: "/profile", auth: true },
+  { label: "Login", path: "/login", auth: false },
+  { label: "Register", path: "/register", auth: false },
+];
 
 function Navbar({ onSearch }) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
   const isFirstRender = useRef(true);
-
-  const token = localStorage.getItem("token");
+  const isMobile = useIsMobile();
+  const { token, logout } = useAuth();
 
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
-
     const delay = setTimeout(() => {
-      if (window.location.pathname !== "/") {
-        navigate(`/?search=${query}`);
-      } else if (onSearch) {
-        onSearch(query);
-      }
+      if (window.location.pathname !== "/") navigate(`/?search=${query}`);
+      else if (onSearch) onSearch(query);
     }, 400);
-
     return () => clearTimeout(delay);
   }, [query]);
 
+  useEffect(() => {
+    if (!isMobile) setMenuOpen(false);
+  }, [isMobile]);
+
+  const handleLogout = () => {
+    logout();
+    window.location.href = "/";
+  };
+  const links = NAV_LINKS.filter((l) => l.auth === !!token);
+
+  const btnClass = (mobile) =>
+    mobile
+      ? "text-[#99aabb] uppercase font-semibold text-[0.7rem] px-3 py-2 rounded-lg hover:text-white hover:bg-[#242c35] transition-all text-left w-full"
+      : "text-[#99aabb] uppercase font-semibold text-[0.65rem] px-2 py-1 rounded-full hover:text-white hover:bg-[#242c35] transition-all whitespace-nowrap cursor-pointer";
+
+  const renderLinks = (mobile) => (
+    <>
+      {links.map(({ label, path }) => (
+        <button
+          key={label}
+          onClick={() => {
+            navigate(path);
+            if (mobile) setMenuOpen(false);
+          }}
+          className={btnClass(mobile)}
+        >
+          {label}
+        </button>
+      ))}
+      {token && (
+        <>
+          {mobile && <div className="h-px bg-[#2c3440] my-1" />}
+          <button
+            onClick={handleLogout}
+            className={
+              mobile
+                ? "text-[#e05050] uppercase font-semibold text-[0.7rem] px-3 py-2 rounded-lg hover:bg-[#e05050]/10 transition-all text-left w-full"
+                : "text-[#e05050] uppercase font-semibold text-[0.65rem] px-2 py-1 rounded-full hover:bg-[#e05050]/20 transition-all whitespace-nowrap cursor-pointer"
+            }
+          >
+            Logout
+          </button>
+        </>
+      )}
+    </>
+  );
+
   return (
-    <nav className="main-navbar">
-      <div className="nav-content">
-        <div className="nav-left">
-          <h1 className="nav-logo" onClick={() => navigate("/")}>
-            CineScope
-          </h1>
-        </div>
-
-        <div className="nav-middle">
-          <input
-            type="text"
-            name="text"
-            id="text"
-            placeholder="Search films..."
-            className="nav-search-input"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-
-        {!token ? (
-          <div className="nav-right">
-            <button className="nav-item-btn" onClick={() => navigate("/login")}>
-              Login
-            </button>
-            <button
-              className="nav-item-btn"
-              onClick={() => navigate("/register")}
+    <div className="fixed top-3 left-0 right-0 flex flex-col items-center z-50 px-4">
+      <nav
+        className={`bg-[#1b2228] border border-[#2c3440] rounded-full px-6 py-2 flex items-center gap-4 shadow-md shadow-black/30 w-full transition-all duration-300 ${searchFocused ? "max-w-187.5" : "max-w-145"}`}
+      >
+        <h1
+          onClick={() => navigate("/")}
+          className="text-white text-base cursor-pointer tracking-[2px] font-sans font-bold shrink-0 pr-4 border-r border-[#2c3440]"
+        >
+          Cineboxd
+        </h1>
+        {!isMobile && (
+          <>
+            <input
+              type="text"
+              placeholder="Search films..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+              className="bg-[#242c35] border border-[#2c3440] rounded-full px-3 py-1.25 text-white text-xs outline-none transition-all duration-300 placeholder:text-[#556] focus:border-[#00e054] w-35 focus:w-55"
+            />
+            <div className="flex items-center gap-0.5 ml-auto">
+              <div className="w-px h-3.5 bg-[#2c3440] mr-1" />
+              {renderLinks(false)}
+            </div>
+          </>
+        )}
+        {isMobile && (
+          <div className="flex items-center gap-3 ml-auto">
+            <svg
+              onClick={() => setMenuOpen(!menuOpen)}
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#99aabb"
+              strokeWidth="2"
+              className="cursor-pointer"
             >
-              Register
-            </button>
-          </div>
-        ) : (
-          <div className="nav-right">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
             <button
-              className="nav-item-btn"
-              onClick={() => navigate("/watchlist")}
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex flex-col gap-1 cursor-pointer p-1"
             >
-              Watchlist
-            </button>
-            <button
-              className="nav-item-btn"
-              onClick={() => navigate(`/favorites`)}
-            >
-              Favorites
-            </button>
-            <button
-              className="nav-item-btn"
-              onClick={() => {
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
-                window.location.href = "/";
-              }}
-            >
-              Logout
-            </button>
-            <button
-              className="nav-item-btn"
-              onClick={() => {
-                window.location.href = "/profile";
-              }}
-            >
-              Profile
+              <span className="block w-4 h-[1.5px] bg-[#99aabb] rounded" />
+              <span
+                className={`block h-[1.5px] bg-[#99aabb] rounded transition-all duration-300 ${menuOpen ? "w-4" : "w-2.75"}`}
+              />
+              <span className="block w-4 h-[1.5px] bg-[#99aabb] rounded" />
             </button>
           </div>
         )}
-      </div>
-    </nav>
+      </nav>
+      {isMobile && menuOpen && (
+        <div className="mt-2 bg-[#1b2228] border border-[#2c3440] rounded-2xl p-3 w-full max-w-145 flex flex-col shadow-md shadow-black/30">
+          <input
+            type="text"
+            placeholder="Search films..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="bg-[#242c35] border border-[#2c3440] rounded-full px-4 py-1.5 text-white text-xs outline-none focus:border-[#00e054] placeholder:text-[#556] mb-2"
+          />
+          {renderLinks(true)}
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -95,7 +95,7 @@ const similarMovies = async(req, res) => {
     const data = await getSimilarMovies(id);
     res.json(data);
   }catch(err){
-    console.log(error);
+    console.log(err);
     res.status(500).json({error: err.message})
   }
 };

@@ -106,8 +106,8 @@ const addToWatchlist = async (req, res) => {
 
     const exists = await Watchlist.findOne({ userId : req.user.id, movieId });
 
-    if(exists){
-      return res.json({ message : "Already in Watchlist" });
+    if (exists) {
+      return res.status(409).json({ message: "Already in Watchlist" });
     }
 
     const item = new Watchlist({ userId: req.user.id, movieId, title, poster });

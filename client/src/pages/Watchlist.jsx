@@ -24,10 +24,7 @@ function Watchlist() {
   const { mutate: remove } = useMutation({
     mutationFn: removeFromWatchlist,
     onSuccess: (_, id) => {
-      queryClient.setQueryData(["watchlist"], (old) => ({
-        ...old,
-        data: old.data.filter((m) => m.movieId !== id),
-      }));
+      queryClient.invalidateQueries({ queryKey: ["watchlist"] });
     },
   });
 

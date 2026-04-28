@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import BackButton from "../components/BackButton";
@@ -26,6 +26,7 @@ const iconBtn = (active, activeColor) =>
 
 function MovieDetails() {
   const { id } = useParams();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { token } = useAuth();
   const { toast, showToast } = useToast();
@@ -92,10 +93,15 @@ function MovieDetails() {
         setIsWatched(false);
         showToast("Removed from Watchlist");
       } else {
-        await addToWatchlist(movie.id, movie.title, movie.poster_path);
+        await addToWatchlist({
+          movieId: movie.id,
+          title: movie.title,
+          poster: movie.poster_path,
+        });
         setIsInWatchlist(true);
         showToast("Added to Watchlist");
       }
+      queryClient.invalidateQueries({ queryKey: ["watchlist"] });
     } catch {
       showToast("Error updating watchlist");
     }

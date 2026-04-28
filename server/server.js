@@ -27,8 +27,4 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.error(err));
 
-<<<<<<< HEAD
 app.listen(5000, () => console.log("Server running on port 5000"));
-=======
-app.listen(5000, () => console.log("Server running on port 5000") );
->>>>>>> 4a7581b (Migrate to Tailwind CSS, add reusable components and hooks, and restructure client architecture)

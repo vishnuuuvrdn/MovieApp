@@ -1,67 +1,91 @@
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Register.css";
+import { register, login } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
+import AuthLayout, {
+  inputClass,
+  submitBtnClass,
+} from "../components/AuthLayout";
 
 function Register() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [error, setError] = useState(null);
+  const { token, setToken, setUser } = useAuth();
+
+  useEffect(() => {
+    if (token) navigate("/");
+  }, []);
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+<<<<<<< HEAD
       await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, form);
       alert("Welcome to the community!");
       navigate("/login");
+=======
+      await register(form.name, form.email, form.password);
+      const res = await login(form.email, form.password);
+      setToken(res.data.token);
+      setUser(res.data.user);
+      navigate("/?welcome=1");
+>>>>>>> 2aee7ce (Updated to Tailwind and fixed few bugs!)
     } catch (err) {
-      alert(err.response?.data?.message || "Something went wrong");
+      setError(err.response?.data?.message || "Something went wrong");
     }
   };
 
   return (
-    <div className="register-container">
-      <div className="register-card">
-        <h1>Join CineScope</h1>
-
-        <form className="register-form" onSubmit={handleSubmit}>
-          <label>Name</label>
-          <input
-            className="register-input"
-            type="text"
-            name="text"
-            id="text"
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
-
-          <label>Email Address</label>
-          <input
-            className="register-input"
-            type="email"
-            name="email"
-            id="email"
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-          />
-
-          <label>Password</label>
-          <input
-            className="register-input"
-            type="password"
-            name="password"
-            id="password"
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-          />
-
-          <button className="register-button" type="submit">
-            Create Account
-          </button>
-        </form>
-
-        <p className="footer-text">
+    <AuthLayout
+      title="Join CineScope"
+      onSubmit={handleSubmit}
+      footer={
+        <p className="mt-5 text-[#99aabb] text-xs text-center">
           Already have an account?{" "}
-          <span onClick={() => navigate("/login")}>Sign in</span>
+          <span
+            onClick={() => navigate("/login")}
+            className="text-white underline cursor-pointer"
+          >
+            Sign in
+          </span>
         </p>
-      </div>
-    </div>
+      }
+    >
+      <input
+        className={inputClass}
+        type="text"
+        name="name"
+        placeholder="Name"
+        required
+        onChange={handleChange}
+      />
+      <input
+        className={inputClass}
+        type="email"
+        name="email"
+        placeholder="Email"
+        required
+        onChange={handleChange}
+      />
+      <input
+        className={inputClass}
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+        onChange={handleChange}
+      />
+      {error && (
+        <p className="text-[#e05050] text-xs text-center -mt-2">{error}</p>
+      )}
+      <button type="submit" className={submitBtnClass}>
+        Create Account
+      </button>
+    </AuthLayout>
   );
 }
 

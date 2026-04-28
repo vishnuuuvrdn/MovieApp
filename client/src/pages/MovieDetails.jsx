@@ -1,106 +1,85 @@
-import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import SimilarMovies from "./SimilarMovies";
-import "./MovieDetails.css";
+import BackButton from "../components/BackButton";
+import PageState from "../components/PageState";
+import MovieCard from "../components/MovieCard";
+import { getMovieById, getSimilarMovies } from "../services/movieService";
+import {
+  getFavorites,
+  addFavorite,
+  removeFavorite,
+  getWatchlist,
+  addToWatchlist,
+  removeFromWatchlist,
+} from "../services/userService";
+import { useAuth } from "../context/AuthContext";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-import { FaEye, FaArrowLeft, FaRegBookmark, FaBookmark } from "react-icons/fa";
+import { FaEye, FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { LuEyeClosed } from "react-icons/lu";
+import api from "../services/api";
+import useToast from "../hooks/useToast";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const iconBtn = (active, activeColor) =>
+  `bg-[#242c35] border rounded-[4px] px-4 py-2.5 cursor-pointer flex items-center text-xl transition-all hover:bg-[#2c3440] hover:text-white ${active ? `${activeColor} border-current` : "border-[#2c3440] text-[#99aabb]"}`;
 
 function MovieDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const [loading, setLoading] = useState(true);
-  const [movie, setMovie] = useState(null);
-  const [similarMovies, setSimilarMovies] = useState([]);
-  const [toast, setToast] = useState("");
+  const { token } = useAuth();
+  const { toast, showToast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
 
-  const token = localStorage.getItem("token");
+  const { data: movieData, isLoading: movieLoading } = useQuery({
+    queryKey: ["movie", id],
+    queryFn: () => getMovieById(id),
+    staleTime: 1000 * 60 * 10,
+  });
 
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 3000);
-  };
+  const { data: similarData, isLoading: similarLoading } = useQuery({
+    queryKey: ["similar", id],
+    queryFn: () => getSimilarMovies(id),
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const movie = movieData?.data;
+  const similarMovies = similarData?.data?.results || [];
+  const loading = movieLoading || similarLoading;
 
   useEffect(() => {
-    const fetchMovieData = async () => {
-      try {
-        setLoading(true);
-        if (token) {
-          const [movieRes, similarRes, favRes, watchRes, watchedRes] =
-            await Promise.all([
-              axios.get(`${BASE_URL}/api/movies/${id}`),
-              axios.get(`${BASE_URL}/api/movies/${id}/similar`),
-              axios.get(`${BASE_URL}/api/movies/favorites`, {
-                headers: { Authorization: token },
-              }),
-              axios.get(`${BASE_URL}/api/movies/watchlist`, {
-                headers: { Authorization: token },
-              }),
-              axios.get(`${BASE_URL}/api/movies/watched/${id}`, {
-                headers: { Authorization: token },
-              }),
-            ]);
-
-          setMovie(movieRes.data);
-          setSimilarMovies(similarRes.data.results || []);
-
-          const currentId = Number(id);
-          setIsFavorite(
-            favRes.data.some((m) => Number(m.movieId) === currentId),
-          );
-
-          const watchEntry = watchRes.data.find(
-            (m) => Number(m.movieId) === currentId,
-          );
-          setIsInWatchlist(!!watchEntry);
-          setIsWatched(watchedRes.data.watched);
-        } else {
-          const [movieRes, similarRes] = await Promise.all([
-            axios.get(`${BASE_URL}/api/movies/${id}`),
-            axios.get(`${BASE_URL}/api/movies/${id}/similar`),
-          ]);
-
-          setMovie(movieRes.data);
-          setSimilarMovies(similarRes.data.results || []);
-        }
-      } catch (err) {
-        console.error("Error fetching movie data", err);
-      } finally {
-        setLoading(false);
-      }
+    if (!token || !movie) return;
+    const loadUserData = async () => {
+      const [favRes, watchlistRes, watchedRes] = await Promise.all([
+        getFavorites(),
+        getWatchlist(),
+        api.get(`/api/movies/watched/${id}`),
+      ]);
+      const cid = Number(id);
+      setIsFavorite(favRes.data.some((m) => Number(m.movieId) === cid));
+      setIsInWatchlist(
+        !!watchlistRes.data.find((m) => Number(m.movieId) === cid),
+      );
+      setIsWatched(watchedRes.data.watched);
     };
-
-    fetchMovieData();
+    loadUserData();
     window.scrollTo(0, 0);
-  }, [id]);
+  }, [id, movie, token]);
 
   const handleFavorite = async () => {
     try {
       if (isFavorite) {
-        await axios.delete(`${BASE_URL}/api/movies/favorite/${movie.id}`, {
-          headers: { Authorization: token },
-        });
+        await removeFavorite(movie.id);
         setIsFavorite(false);
         showToast("Removed from Favorites");
       } else {
-        await axios.post(
-          `${BASE_URL}/api/movies/favorite`,
-          { movieId: movie.id, title: movie.title, poster: movie.poster_path },
-          { headers: { Authorization: token } },
-        );
+        await addFavorite(movie.id, movie.title, movie.poster_path);
         setIsFavorite(true);
         showToast("Added to Favorites");
       }
-    } catch (err) {
-      console.error("Error updating favorites", err);
+    } catch {
       showToast("Error updating favorites");
     }
   };
@@ -108,120 +87,139 @@ function MovieDetails() {
   const handleWatchlist = async () => {
     try {
       if (isInWatchlist) {
-        await axios.delete(`${BASE_URL}/api/movies/watchlist/${movie.id}`, {
-          headers: { Authorization: token },
-        });
+        await removeFromWatchlist(movie.id);
         setIsInWatchlist(false);
         setIsWatched(false);
         showToast("Removed from Watchlist");
       } else {
-        await axios.post(
-          `${BASE_URL}/api/movies/watchlist`,
-          { movieId: movie.id, title: movie.title, poster: movie.poster_path },
-          { headers: { Authorization: token } },
-        );
+        await addToWatchlist(movie.id, movie.title, movie.poster_path);
         setIsInWatchlist(true);
         showToast("Added to Watchlist");
       }
-    } catch (err) {
-      console.error("Error updating watchlist", err);
+    } catch {
       showToast("Error updating watchlist");
     }
   };
 
-  const toggleWatchedStatus = async () => {
+  const toggleWatched = async () => {
     try {
-      await axios.post(
-        `${BASE_URL}/api/movies/watched/${movie.id}`,
-        { title: movie.title, poster: movie.poster_path },
-        { headers: { Authorization: token } },
-      );
-
-      const nextState = !isWatched;
-      setIsWatched(nextState);
-      showToast(nextState ? "Marked as Watched" : "Removed from Watched");
-    } catch (err) {
-      console.error("Update failed", err);
+      await api.post(`/api/movies/watched/${movie.id}`, {
+        title: movie.title,
+        poster: movie.poster_path,
+      });
+      setIsWatched((p) => !p);
+      showToast(!isWatched ? "Marked as Watched" : "Removed from Watched");
+    } catch {
       showToast("Error updating status");
     }
   };
 
-  if (loading || !movie) return <div className="loader">Loading...</div>;
-
   return (
-    <div className="md-page">
+    <div className="bg-[#14181c] min-h-screen">
       <Navbar />
-
-      {toast && <div className="toast-popup">{toast}</div>}
-
-      <div className="md-container">
-        <button className="md-back-btn" onClick={() => navigate(-1)}>
-          <FaArrowLeft /> Back
-        </button>
-
-        <div className="md-main-content">
-          <div className="md-poster-column">
-            <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
-              className="md-poster"
-            />
-          </div>
-
-          <div className="md-info-column">
-            <div className="md-header-block">
-              <h1 className="md-title">{movie.title}</h1>
-              {movie.tagline && <p className="md-tagline">"{movie.tagline}"</p>}
-            </div>
-
-            <p className="md-overview">{movie.overview}</p>
-
-            <div className="md-action-row">
-              <button
-                className={`md-icon-btn ${isFavorite ? "is-fav" : ""}`}
-                onClick={handleFavorite}
-                title={
-                  isFavorite ? "Remove from Favorites" : "Add to Favorites"
-                }
-              >
-                {isFavorite ? <MdFavorite /> : <MdFavoriteBorder />}
-              </button>
-
-              <button
-                className={`md-icon-btn ${isInWatchlist ? "is-watchlisted" : ""}`}
-                onClick={handleWatchlist}
-                title={
-                  isInWatchlist ? "Remove from Watchlist" : "Add to Watchlist"
-                }
-              >
-                {isInWatchlist ? <FaBookmark /> : <FaRegBookmark />}
-              </button>
-
-              <button
-                className={`md-icon-btn ${isWatched ? "is-watched" : ""}`}
-                onClick={toggleWatchedStatus}
-                title={isWatched ? "Mark as Unwatched" : "Mark as Watched"}
-              >
-                {isWatched ? <FaEye /> : <LuEyeClosed />}
-              </button>
-            </div>
-
-            <div className="md-stats">
-              <div className="md-stat-box">
-                <span className="md-label">Rating</span>
-                <span className="md-value">
-                  ⭐ {movie.vote_average?.toFixed(1)}
-                </span>
-              </div>
-              <div className="md-stat-box">
-                <span className="md-label">Released</span>
-                <span className="md-value">{movie.release_date}</span>
-              </div>
-            </div>
-          </div>
+      {toast && (
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-[#242c35] text-white px-6 py-3 rounded-sm border border-[#445566] font-semibold z-50 shadow-[0_8px_24px_rgba(0,0,0,0.5)]">
+          {toast}
         </div>
-
-        <SimilarMovies movies={similarMovies} navigate={navigate} />
+      )}
+      <div className="max-w-262.5 mx-auto px-4 sm:px-6 pt-20 pb-20">
+        <PageState
+          loading={loading}
+          error={!movie && !loading ? "Failed to load movie." : null}
+        />
+        {!loading && movie && (
+          <>
+            <BackButton className="mb-6" />
+            <div className="flex flex-col md:grid md:grid-cols-[220px_1fr] gap-8 items-start">
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+                loading="lazy"
+                className="w-40 md:w-full mx-auto md:mx-0 rounded-sm border border-[#2c3440]"
+              />
+              <div className="w-full">
+                <h1 className="font-['Bebas_Neue'] text-4xl sm:text-5xl text-white leading-none uppercase">
+                  {movie.title}
+                </h1>
+                {movie.tagline && (
+                  <p className="italic text-[#667788] text-base mt-2">
+                    "{movie.tagline}"
+                  </p>
+                )}
+                <p className="text-[#99aabb] text-sm sm:text-base leading-relaxed my-5">
+                  {movie.overview}
+                </p>
+                {token && (
+                  <div className="flex gap-3 mb-6 flex-wrap">
+                    <button
+                      onClick={handleFavorite}
+                      className={iconBtn(isFavorite, "text-[#ff8000]")}
+                      title={
+                        isFavorite
+                          ? "Remove from Favorites"
+                          : "Add to Favorites"
+                      }
+                    >
+                      {isFavorite ? <MdFavorite /> : <MdFavoriteBorder />}
+                    </button>
+                    <button
+                      onClick={handleWatchlist}
+                      className={iconBtn(isInWatchlist, "text-[#00e054]")}
+                      title={
+                        isInWatchlist
+                          ? "Remove from Watchlist"
+                          : "Add to Watchlist"
+                      }
+                    >
+                      {isInWatchlist ? <FaBookmark /> : <FaRegBookmark />}
+                    </button>
+                    <button
+                      onClick={toggleWatched}
+                      className={iconBtn(isWatched, "text-[#00e054]")}
+                      title={
+                        isWatched ? "Mark as Unwatched" : "Mark as Watched"
+                      }
+                    >
+                      {isWatched ? <FaEye /> : <LuEyeClosed />}
+                    </button>
+                  </div>
+                )}
+                <div className="flex gap-10 border-t border-[#2c3440] pt-5">
+                  {[
+                    ["Rating", `⭐ ${movie.vote_average?.toFixed(1)}`],
+                    ["Released", movie.release_date],
+                  ].map(([label, value]) => (
+                    <div key={label}>
+                      <span className="block text-[0.65rem] text-[#667788] uppercase mb-1">
+                        {label}
+                      </span>
+                      <span className="text-lg font-bold text-white">
+                        {value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            {similarMovies.length > 0 && (
+              <div className="mt-14">
+                <h2 className="text-[#99aabb] uppercase text-xs tracking-[2px] font-semibold mb-5">
+                  Similar Movies
+                </h2>
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4 sm:gap-6">
+                  {similarMovies.map((m) => (
+                    <MovieCard
+                      key={m.id}
+                      movie={m}
+                      onClick={() => navigate(`/movie/${m.id}`)}
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

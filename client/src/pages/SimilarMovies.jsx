@@ -1,40 +1,25 @@
-import React from "react";
-import './SimilarMovies.css'
+import MovieCard from "./MovieCard";
 
 function SimilarMovies({ movies, navigate }) {
-  if (!movies || movies.length === 0) {
-    return (
-      <div className="similar-section">
-        <h2 className="section-title">Similar Films</h2>
-        <p className="no-data">No similar movies found.</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="similar-section">
-      <h2 className="section-title">Similar Films</h2>
-      <div className="movie-grid">
-        {movies.map((item) => (
-          <div
-            className="movie-card"
-            key={item.id}
-            onClick={() => navigate(`/movie/${item.id}`)}
-          >
-            <div className="poster-wrapper">
-              <img
-                src={
-                  item.poster_path
-                    ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-                    : "/placeholder.png"
-                }
-                alt={item.title}
-              />
-            </div>
-            <h3 className="movie-title-sm">{item.title}</h3>
-          </div>
-        ))}
-      </div>
+    <div className="mt-14 pt-10 border-t border-[#2c3440]">
+      <h2 className="text-[#667788] text-[0.8rem] uppercase tracking-[2px] mb-6">
+        Similar Films
+      </h2>
+
+      {!movies || movies.length === 0 ? (
+        <p className="text-[#556] text-sm">No similar movies found.</p>
+      ) : (
+        <div className="grid gap-4 grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+          {movies.map((item) => (
+            <MovieCard
+              key={item.id}
+              movie={item}
+              onClick={() => navigate(`/movie/${item.id}`)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

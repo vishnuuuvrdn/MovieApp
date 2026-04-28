@@ -1,75 +1,98 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Navbar from "../components/Navbar";
-import "./Watchlist.css";
-
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import BackButton from "../components/BackButton";
+import PageState from "../components/PageState";
+import MovieCard from "../components/MovieCard";
+import { getWatchlist, removeFromWatchlist } from "../services/userService";
+import useIsMobile from "../hooks/useIsMobile";
 
 function Watchlist() {
   const navigate = useNavigate();
-  const [list, setList] = useState([]);
-  const token = localStorage.getItem("token");
+  const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
+  const isTablet = useIsMobile(1024);
 
-  const fetchWatchlist = async () => {
-    const res = await axios.get(`${BASE_URL}/api/movies/watchlist`, { headers: { Authorization: token} });
-    setList(res.data);
-  };
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["watchlist"],
+    queryFn: getWatchlist,
+    staleTime: 1000 * 60 * 2,
+  });
 
-  const removeMovie = async (e, id) => {
-    e.stopPropagation();
-    await axios.delete(`${BASE_URL}/api/movies/watchlist/${id}`, {
-      headers: { Authorization: token },
-    });
-    fetchWatchlist();
-  };
+  const list = data?.data ?? [];
 
-  useEffect(() => {
-    fetchWatchlist();
-  }, []);
+  const { mutate: remove } = useMutation({
+    mutationFn: removeFromWatchlist,
+    onSuccess: (_, id) => {
+      queryClient.setQueryData(["watchlist"], (old) => ({
+        ...old,
+        data: old.data.filter((m) => m.movieId !== id),
+      }));
+    },
+  });
+
+  const gridCols = isMobile ? 3 : isTablet ? 4 : 5;
 
   return (
-    <div className="wl-page">
+    <div className="bg-[#14181c] min-h-screen text-white">
       <Navbar />
-      <div className="wl-container">
-        <div className="wl-top-navigation">
-          <button className="wl-back-btn" onClick={() => navigate(-1)}>
-            ← Back
-          </button>
-        </div>
-
-        <header className="wl-header">
-          <h1 className="wl-page-title">Watchlist</h1>
-          <span className="wl-count">{list.length} Films</span>
+      <div className="max-w-275 mx-auto px-4 sm:px-6 pt-28 pb-20">
+        <BackButton className="mb-4" />
+        <header className="flex justify-between items-baseline border-b border-[#2c3440] pb-2.5 mb-8">
+          <h1 className="text-[1.4rem] uppercase tracking-[1px] font-semibold">
+            Watchlist
+          </h1>
+          <span className="text-[#667788] text-sm font-bold">
+            {list.length} Films
+          </span>
         </header>
 
-        {list.length === 0 ? (
-          <div className="wl-empty-state">
-            <p>Your watchlist is empty. Start adding some movies!</p>
-            <Link to="/" className="wl-browse-link">
+        <PageState
+          loading={isLoading}
+          error={error ? "Failed to load watchlist." : null}
+          onRetry={refetch}
+        />
+
+        {!isLoading && !error && list.length === 0 && (
+          <div className="text-center py-24 text-[#667788]">
+            <p className="mb-4 text-sm">
+              Your watchlist is empty. Start adding some movies!
+            </p>
+            <Link
+              to="/"
+              className="text-[#00e054] border border-[#00e054] px-4 py-2 rounded text-sm hover:bg-[#00e054]/10 transition-colors"
+            >
               Browse Movies
             </Link>
           </div>
-        ) : (
-          <div className="wl-grid">
+        )}
+
+        {!isLoading && !error && list.length > 0 && (
+          <div
+            className="grid gap-5 sm:gap-6"
+            style={{
+              gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))`,
+            }}
+          >
             {list.map((movie) => (
-              <div key={movie.movieId} className="fv-card-wrapper">
-                <div
-                  className="wl-poster-wrapper"
+              <div key={movie.movieId} className="relative group">
+                <MovieCard
+                  movie={{
+                    id: movie.movieId,
+                    poster_path: movie.poster,
+                    title: movie.title,
+                  }}
                   onClick={() => navigate(`/movie/${movie.movieId}`)}
+                />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    remove(movie.movieId);
+                  }}
+                  className="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-black/70 text-white text-xl flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-[#ff4b4b] transition-all"
                 >
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
-                    alt={movie.title}
-                  />
-                  <button
-                    className="wl-remove-btn"
-                    onClick={(e) => removeMovie(e, movie.movieId)}
-                  >
-                    ×
-                  </button>
-                </div>
-                <h3 className="wl-title">{movie.title}</h3>
+                  ×
+                </button>
               </div>
             ))}
           </div>

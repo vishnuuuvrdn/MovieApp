@@ -18,24 +18,11 @@ function Profile() {
 
   const handleUpdate = async () => {
     try {
-<<<<<<< HEAD
-      const res = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/auth/profile`,
-        { name },
-        { headers: { Authorization: token } },
-      );
-
-      localStorage.setItem("user", JSON.stringify(res.data));
-      alert("Profile updated!");
-    } catch (err) {
-      alert("Update failed");
-=======
       const res = await updateProfile({ name });
       setUser(res.data);
       showToast("Profile updated!");
     } catch {
       showToast("Update failed.");
->>>>>>> 2aee7ce (Updated to Tailwind and fixed few bugs!)
     }
   };
 

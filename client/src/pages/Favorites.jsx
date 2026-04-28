@@ -10,25 +10,11 @@ function Favorites() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-<<<<<<< HEAD
-  const fetchFavorites = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/movies/favorites`,
-        { headers: { Authorization: token } },
-      );
-      setFavorites(res.data);
-    } catch (err) {
-      console.error("Error fetching favorites:", err);
-    }
-  };
-=======
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["favorites"],
     queryFn: getFavorites,
     staleTime: 1000 * 60 * 2,
   });
->>>>>>> 2aee7ce (Updated to Tailwind and fixed few bugs!)
 
   const favorites = data?.data ?? [];
 
@@ -44,38 +30,10 @@ function Favorites() {
 
   const handleRemove = (e, id) => {
     e.stopPropagation();
-<<<<<<< HEAD
-    try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/movies/favorite/${id}`, {
-        headers: { Authorization: token },
-      });
-      fetchFavorites();
-    } catch (err) {
-      console.error("Remove failed:", err);
-    }
-=======
     remove(id);
->>>>>>> 2aee7ce (Updated to Tailwind and fixed few bugs!)
   };
 
   return (
-<<<<<<< HEAD
-    <div className="fv-page-bg">
-      <nav>
-        <Navbar />
-      </nav>
-
-      <div className="fv-main-container">
-        <div className="fv-top-navigation">
-          <button className="fv-back-btn" onClick={() => navigate(-1)}>
-            ← Back
-          </button>
-        </div>
-
-        <header className="fv-header-section">
-          <h1 className="fv-page-title">Favorites</h1>
-          <span className="fv-film-count">{favorites.length} FILMS</span>
-=======
     <div className="bg-[#14181c] min-h-screen text-white">
       <Navbar />
       <div className="max-w-275 mx-auto px-4 sm:px-6 pt-28 pb-20">
@@ -87,7 +45,6 @@ function Favorites() {
           <span className="text-[#667788] text-xs font-bold">
             {favorites.length} FILMS
           </span>
->>>>>>> 2aee7ce (Updated to Tailwind and fixed few bugs!)
         </header>
 
         <PageState

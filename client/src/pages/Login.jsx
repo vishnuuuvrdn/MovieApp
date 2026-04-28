@@ -15,7 +15,7 @@ function Login() {
   const [, setUser] = useLocalStorage("user", null);
 
   useEffect(() => {
-    if (token) navigate("/",);
+    if (token) navigate("/");
   }, [token, navigate]);
 
   const handleChange = (e) =>
@@ -24,18 +24,9 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-<<<<<<< HEAD
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        form,
-      );
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-=======
       const res = await login(form.email, form.password);
       setToken(res.data.token);
       setUser(res.data.user);
->>>>>>> 2aee7ce (Updated to Tailwind and fixed few bugs!)
       navigate("/");
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || "Login failed");

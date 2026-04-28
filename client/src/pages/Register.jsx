@@ -23,17 +23,11 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-<<<<<<< HEAD
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, form);
-      alert("Welcome to the community!");
-      navigate("/login");
-=======
       await register(form.name, form.email, form.password);
       const res = await login(form.email, form.password);
       setToken(res.data.token);
       setUser(res.data.user);
       navigate("/?welcome=1");
->>>>>>> 2aee7ce (Updated to Tailwind and fixed few bugs!)
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
     }

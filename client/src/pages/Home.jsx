@@ -18,24 +18,6 @@ function Home() {
   const { user } = useAuth();
   const searchQuery = searchParams.get("search") || "";
 
-<<<<<<< HEAD
-  const fetchMovies = async (searchQuery = "") => {
-    try {
-      setLoading(true);
-      const url = searchQuery
-        ? `${import.meta.env.VITE_API_URL}/api/movies/search?q=${searchQuery}`
-        : `${import.meta.env.VITE_API_URL}/api/movies`;
-      const res = await axios.get(url);
-      setMovies(res.data.results);
-    } catch (err) {
-      console.error("Failed to load movies");
-    } finally {
-      setLoading(false);
-    }
-  };
-=======
->>>>>>> 2aee7ce (Updated to Tailwind and fixed few bugs!)
-
   useEffect(() => {
     if (searchParams.get("welcome") === "1") {
       showToast(`Welcome to Cineboxd, ${user?.name || ""}! 🎬`);

@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const Favorite = require("../models/Favorite");
 const Watched = require("../models/Watched");
 const Watchlist = require("../models/Watchlist");
+const validator = require("validator");
 
 // Register
 const register = async (req, res) => {
@@ -13,6 +14,10 @@ const register = async (req, res) => {
     const exists = await User.findOne({ email });
     if (exists) {
       return res.status(400).json({ message: "User already exists" });
+    }
+
+    if(!validator.isEmail(email)){
+      return res.status(422).json({ message: "Email Format is Wrong!" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);

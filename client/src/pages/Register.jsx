@@ -6,12 +6,14 @@ import AuthLayout, {
   inputClass,
   submitBtnClass,
 } from "../components/AuthLayout";
+import useToast from "../hooks/useToast"
 
 function Register() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState(null);
   const { token, setToken, setUser } = useAuth();
+  const { toast, showToast } = useToast();
 
   useEffect(() => {
     if (token) navigate("/");
@@ -25,6 +27,10 @@ function Register() {
     try {
       await register(form.name, form.email, form.password);
       const res = await login(form.email, form.password);
+
+      if(res.status == 422){
+        return showToast("Email Format is Wrong");
+      }
       setToken(res.data.token);
       setUser(res.data.user);
       navigate("/?welcome=1");

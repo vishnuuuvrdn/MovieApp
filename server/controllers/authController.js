@@ -11,13 +11,13 @@ const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    if (!validator.isEmail(email)) {
+      return res.status(422).json({ message: "Email Format is Wrong!" });
+    }
+
     const exists = await User.findOne({ email });
     if (exists) {
       return res.status(400).json({ message: "User already exists" });
-    }
-
-    if(!validator.isEmail(email)){
-      return res.status(422).json({ message: "Email Format is Wrong!" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -37,7 +37,7 @@ const register = async (req, res) => {
   }
 };
 
-// LOGIN
+// Login
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -94,7 +94,11 @@ const updateProfile = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    await User.findByIdAndDelete(req.params.id);
+    const id = req.params.id;
+    await User.findByIdAndDelete(id);
+    await Watched.deleteMany({userId : { $eq : id}});
+    await Watchlist.deleteMany({ userId: { $eq: id } });
+    await Favorite.deleteMany({ userId: { $eq: id } });
     res.json({ message: "User deleted" });
   } catch(err) {
     console.log(err);

@@ -49,6 +49,7 @@ function AdminPanel() {
         ...old,
         data: old.data.filter((u) => u._id !== id),
       }));
+      window.location.href = "/admin"
     },
   });
 

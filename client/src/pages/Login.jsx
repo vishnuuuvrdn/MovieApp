@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { login } from "../services/authService";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import AuthLayout, {
@@ -15,8 +15,10 @@ function Login() {
   const [, setUser] = useLocalStorage("user", null);
 
   useEffect(() => {
-    if (token) navigate("/");
-  }, [token, navigate]);
+    if (token){
+      navigate("/")
+    };
+  }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,7 +29,7 @@ function Login() {
       const res = await login(form.email, form.password);
       setToken(res.data.token);
       setUser(res.data.user);
-      navigate("/");
+      window.location.href = "/";
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || "Login failed");
     }

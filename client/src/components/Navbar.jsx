@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import useIsMobile from "../hooks/useIsMobile";
 import { useAuth } from "../context/AuthContext";
@@ -38,7 +38,7 @@ function Navbar({ onSearch }) {
 
   const handleLogout = () => {
     logout();
-    window.location.href = "/";
+    navigate("/");
   };
   const links = NAV_LINKS.filter((l) => l.auth === !!token);
 

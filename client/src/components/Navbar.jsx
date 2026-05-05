@@ -108,14 +108,14 @@ function Navbar({ onSearch }) {
           </>
         )}
         {isMobile && (
-          <>
+          <div className="flex items-center w-full">
             <h1
               onClick={() => navigate("/")}
               className="text-white text-base cursor-pointer tracking-[2px] font-sans font-bold shrink-0 pr-2 border-r border-[#2c3440]"
             >
               Cineboxd
             </h1>
-            <div className="flex items-center gap-0 ml-0.5">
+            <div className="flex-1 flex justify-center px-3">
               <input
                 type="text"
                 placeholder="Search films..."
@@ -123,20 +123,22 @@ function Navbar({ onSearch }) {
                 onChange={(e) => setQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}
-                className="bg-[#242c35] border border-[#2c3440] rounded-full px-3 py-1.25 text-white text-xs outline-none transition-all duration-300 placeholder:text-[#556] focus:border-[#00e054] w-25 focus:w-32 ml-0 mr-8 focus:mr-1"
+                className="bg-[#242c35] border border-[#2c3440] rounded-full px-3 py-1.5 text-white text-xs outline-none transition-all duration-300 placeholder:text-[#556] focus:border-[#00e054] w-full max-w-45 focus:max-w-55"
               />
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="flex flex-col gap-1 cursor-pointer p-1"
-              >
-                <span className="block w-4 h-[1.5px] bg-[#99aabb] rounded" />
-                <span
-                  className={`block h-[1.5px] bg-[#99aabb] rounded transition-all duration-300 ${menuOpen ? "w-4" : "w-2.75"}`}
-                />
-                <span className="block w-4 h-[1.5px] bg-[#99aabb] rounded" />
-              </button>
             </div>
-          </>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex flex-col gap-1 cursor-pointer p-1 shrink-0"
+            >
+              <span className="block w-4 h-[1.5px] bg-[#99aabb] rounded" />
+              <span
+                className={`block h-[1.5px] bg-[#99aabb] rounded transition-all duration-300 ${
+                  menuOpen ? "w-4" : "w-3"
+                }`}
+              />
+              <span className="block w-4 h-[1.5px] bg-[#99aabb] rounded" />
+            </button>
+          </div>
         )}
       </nav>
       {isMobile && menuOpen && (

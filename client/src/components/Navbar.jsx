@@ -1,4 +1,4 @@
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import useIsMobile from "../hooks/useIsMobile";
 import { useAuth } from "../context/AuthContext";
@@ -82,16 +82,16 @@ function Navbar({ onSearch }) {
   return (
     <div className="fixed top-3 left-0 right-0 flex flex-col items-center z-50 px-4">
       <nav
-        className={`bg-[#1b2228] border border-[#2c3440] rounded-full px-6 py-2 flex items-center gap-4 shadow-md shadow-black/30 w-full transition-all duration-300 ${searchFocused ? "max-w-187.5" : "max-w-145"}`}
+        className={`bg-[#1b2228] border border-[#2c3440] rounded-full px-6 py-2 flex items-center gap-4 shadow-md shadow-black/30 w-full transition-all duration-300 ${searchFocused ? "max-w-170" : "max-w-145"}`}
       >
-        <h1
-          onClick={() => navigate("/")}
-          className="text-white text-base cursor-pointer tracking-[2px] font-sans font-bold shrink-0 pr-4 border-r border-[#2c3440]"
-        >
-          Cineboxd
-        </h1>
         {!isMobile && (
           <>
+            <h1
+              onClick={() => navigate("/")}
+              className="text-white text-base cursor-pointer tracking-[2px] font-sans font-bold shrink-0 pr-4 border-r border-[#2c3440]"
+            >
+              Cineboxd
+            </h1>
             <input
               type="text"
               placeholder="Search films..."
@@ -108,42 +108,39 @@ function Navbar({ onSearch }) {
           </>
         )}
         {isMobile && (
-          <div className="flex items-center gap-3 ml-auto">
-            <svg
-              onClick={() => setMenuOpen(!menuOpen)}
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#99aabb"
-              strokeWidth="2"
-              className="cursor-pointer"
+          <>
+            <h1
+              onClick={() => navigate("/")}
+              className="text-white text-base cursor-pointer tracking-[2px] font-sans font-bold shrink-0 pr-2 border-r border-[#2c3440]"
             >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="flex flex-col gap-1 cursor-pointer p-1"
-            >
-              <span className="block w-4 h-[1.5px] bg-[#99aabb] rounded" />
-              <span
-                className={`block h-[1.5px] bg-[#99aabb] rounded transition-all duration-300 ${menuOpen ? "w-4" : "w-2.75"}`}
+              Cineboxd
+            </h1>
+            <div className="flex items-center gap-0 ml-0.5">
+              <input
+                type="text"
+                placeholder="Search films..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                className="bg-[#242c35] border border-[#2c3440] rounded-full px-3 py-1.25 text-white text-xs outline-none transition-all duration-300 placeholder:text-[#556] focus:border-[#00e054] w-25 focus:w-32 ml-0 mr-8 focus:mr-1"
               />
-              <span className="block w-4 h-[1.5px] bg-[#99aabb] rounded" />
-            </button>
-          </div>
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="flex flex-col gap-1 cursor-pointer p-1"
+              >
+                <span className="block w-4 h-[1.5px] bg-[#99aabb] rounded" />
+                <span
+                  className={`block h-[1.5px] bg-[#99aabb] rounded transition-all duration-300 ${menuOpen ? "w-4" : "w-2.75"}`}
+                />
+                <span className="block w-4 h-[1.5px] bg-[#99aabb] rounded" />
+              </button>
+            </div>
+          </>
         )}
       </nav>
       {isMobile && menuOpen && (
         <div className="mt-2 bg-[#1b2228] border border-[#2c3440] rounded-2xl p-3 w-full max-w-145 flex flex-col shadow-md shadow-black/30">
-          <input
-            type="text"
-            placeholder="Search films..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="bg-[#242c35] border border-[#2c3440] rounded-full px-4 py-1.5 text-white text-xs outline-none focus:border-[#00e054] placeholder:text-[#556] mb-2"
-          />
           {renderLinks(true)}
         </div>
       )}

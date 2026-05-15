@@ -1,3 +1,4 @@
+require('dotenv').config();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -57,7 +58,7 @@ const login = async (req, res) => {
         id: user._id,
         role: user.role,
       },
-      "secretkey",
+      process.env.JWT_SECRET,
       { expiresIn: "7d" },
     );
 

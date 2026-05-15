@@ -7,7 +7,7 @@ const authMiddleware = (req, res, next) => {
   const token = auth.startsWith("Bearer ") ? auth.split(" ")[1] : auth;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secretkey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
   } catch {

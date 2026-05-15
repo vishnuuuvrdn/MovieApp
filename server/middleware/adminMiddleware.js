@@ -1,6 +1,5 @@
 const adminMiddleware = (req, res, next) => {
   try {
-    // req.user comes from authMiddleware
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
     }

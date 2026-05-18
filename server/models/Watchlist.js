@@ -10,5 +10,7 @@ const watchlistSchema = new mongoose.Schema({
   poster: String,
 });
 
+watchlistSchema.index({ userId: 1, movieId: 1 }, { unique: true });
+
 const Watchlist = mongoose.model("Watchlist", watchlistSchema);
 module.exports = Watchlist;

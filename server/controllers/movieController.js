@@ -116,6 +116,9 @@ const addToWatchlist = async (req, res) => {
     
     res.json({ message : "Added to Watchlist" });
   }catch(error){
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "Already in Watchlist" });
+    }
     console.log(error);
     res.status(500).json({ error : "Failed to add Watchlist" });
   }
